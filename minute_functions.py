@@ -1,12 +1,5 @@
 
-import json
 import aws
-import json
-import bcrypt
-import jwt
-import base64
-from datetime import datetime
-from datetime import timedelta
 import uuid
 from boto3.dynamodb.conditions import Key, Attr
 
@@ -35,7 +28,7 @@ def create_minute(body):
         response = dynamodb_client.put_item(
             TableName='Minutes', Item=dynamo_body)
 
-        return {'statusCode': 200, 'response': 'Something'}
+        return {'statusCode': 200, 'response': 'Success'}
 
     except Exception as e:
         print(e)
