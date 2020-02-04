@@ -24,7 +24,7 @@ def create_minute(body):
         # Body must contain the following mandatory fields
         creator = body['creator']
         title = body['title']
-        date = body['date']
+        creation_date = body['creation_date']
         time = body['time']
         finish = body['finish']
         dynamo_body = return_body(body)
@@ -47,15 +47,28 @@ def create_minute_actions(minute_id):
 
 
 def get_my_minutes(email):
-    response = dynamodb_client.query(TableName='Minutes',
-                                     IndexName='creator-index', KeyConditionExpression="creator = :v1",
-                                     ExpressionAttributeValues={
-                                         ":v1": {"S": email}
-                                     })
-    minutes = {}
+    minutes_i_created = dynamodb_client.query(TableName='Minutes',
+                                              IndexName='creator-index', KeyConditionExpression="creator = :email",
+                                              ExpressionAttributeValues={
+                                                  ":email": {"S": email}
+                                              })
+
+    minutes_i_attended = dynamodb_client.scan(TableName="Minutes",
+                                              FilterExpression="contains(guests,:email) and creator <> :email",
+                                              ExpressionAttributeValues={
+                                                  ":email": {"S": email}
+                                              })
     try:
-        mintues = response['Items']
-        return {'statusCode': 200, 'response': mintues}
+        minutes_i_created['Items']
+    except:
+        minutes_i_created['Items'] = {}
+    try:
+        minutes_i_attended['Items']
+    except:
+        minutes_i_attended['Items'] = {}
+
+    try:
+        return {'statusCode': 200, 'response': {'minutes_created': minutes_i_created['Items'], 'minutes_attended': minutes_i_attended}}
     except:
         return custom_400('Could not find any')
 
@@ -74,57 +87,6 @@ def return_body(jsonObject):
             return_dict[key] = {'S': value}
 
     return(return_dict)
-#
-# def update_user(body):
-#     # Can't update key which is email address. Might need a change email address method which removes Item and creates new
-#     email = str(body['email'])
-#     new_firstname = str(body['firstname'])
-#     new_surname = str(body['surname'])
-#     try:
-#         # Remove user record from dynamoDB if exists
-#         if return_user(email) != 0:
-#             dynamodb_client.update_item(TableName='Minutes', Key={'email_address': {'S': email}},
-#                                         UpdateExpression="SET first_name = :firstnameUpdated, surname = :surnameUpdated",
-#                                         ExpressionAttributeValues={':firstnameUpdated': {'S': new_firstname}, ':surnameUpdated': {'S': new_surname}})
-#             return {'statusCode': 200, 'response': str('Updated User - ' + email)}
-#         else:
-#             return custom_400('No User found')
-#     except Exception as E:
-#         return custom_400(str(E))
-#
-#
-# def remove_user(email):
-#     if return_user(email) != 0:
-#         dynamodb_client.delete_item(TableName='Minutes', Key={
-#                                     'email_address': {'S': email}})
-#         return('Removed User Successfully - ' + str(email))
-#     else:
-#         return custom_400('No User found')
-#
-#
-# def get_user(email_address):
-#     user = return_user(email_address)
-#     return_body = {}
-#     return_body["firstname"] = user['first_name']['S']
-#     return_body["surname"] = user['surname']['S']
-#     return_body["email"] = email_address
-#     if user != 0:
-#         return {'statusCode': 200, 'response': str(return_body)}
-#     else:
-#         return custom_400('No User found')
-#
-#
-# def return_user(email_address):
-#     response = dynamodb_client.get_item(
-#         TableName='Minutes', Key={'email_address': {'S': email_address}})
-#     # Check if an user existsx
-#     try:
-#         user = response['Item']
-#         return user
-#     except:
-#         return 0
-#
-#
 
 
 def custom_400(message):

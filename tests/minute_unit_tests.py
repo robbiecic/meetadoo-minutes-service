@@ -25,6 +25,8 @@ class MinuteTestCase(unittest.TestCase):
         email = json_data['data']['creator']
         response = get_my_minutes(email)
         self.assertEqual(response['statusCode'], 200)
+        response = get_my_minutes('test6@test.com')
+        self.assertEqual(response['statusCode'], 200)
 
 
 # End of UserTestCase --------------------------------------------------------------------------------------------------------------------

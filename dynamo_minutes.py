@@ -19,7 +19,7 @@ try:
                 'KeyType': 'HASH'  # Partition key, unique
             },
             {
-                'AttributeName': 'date',
+                'AttributeName': 'creation_date',
                 'KeyType': 'RANGE'  # Partition key, unique
             }
         ],
@@ -29,7 +29,7 @@ try:
                 'AttributeType': 'S'
             },
             {
-                'AttributeName': 'date',
+                'AttributeName': 'creation_date',
                 'AttributeType': 'S'
             }
         ],

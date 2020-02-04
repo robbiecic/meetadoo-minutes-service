@@ -1,7 +1,7 @@
 {
   "data": {
     "title": "My test meeting",
-    "date": "2019-02-04",
+    "creation_date": "2019-02-04",
     "time": "10:30",
     "finish": "13:30",
     "timezone": "GMT",
