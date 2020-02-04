@@ -8,7 +8,7 @@ from botocore.exceptions import ClientError
 
 # Create dynamodb instance
 client = aws.create_dynamodb_resource()
-
+client2 = aws.create_dynamodb_client()
 
 try:
     table = client.create_table(
@@ -19,22 +19,14 @@ try:
                 'KeyType': 'HASH'  # Partition key, unique
             },
             {
-                'AttributeName': 'guests',
-                'KeyType': 'HASH'  # Partition key, unique
-            },
-            {
                 'AttributeName': 'date',
-                'KeyType': 'Range'  # Partition key, unique
+                'KeyType': 'RANGE'  # Partition key, unique
             }
         ],
         AttributeDefinitions=[
             {
                 'AttributeName': 'creator',
                 'AttributeType': 'S'
-            },
-            {
-                'AttributeName': 'guests',
-                'AttributeType': 'L'
             },
             {
                 'AttributeName': 'date',
