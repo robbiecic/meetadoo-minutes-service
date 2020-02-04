@@ -5,6 +5,7 @@ phases:
       python: 3.8
     commands:
       - pip3 install boto3 -t ./
+      - pip3 install pyjwt -t ./
   pre_build:
     commands:
       - python -m unittest -v tests/minute_unit_tests.py

@@ -2,7 +2,7 @@
 import aws
 import uuid
 from boto3.dynamodb.conditions import Key, Attr
-
+import jwt
 
 # Create dynamodb instance
 dynamodb_client = aws.create_dynamodb_client()
@@ -93,3 +93,18 @@ def return_body(jsonObject):
 
 def custom_400(message):
     return {'statusCode': 400, 'response': message}
+
+
+def isAuthenticated(encoded_jwt):
+    # jwt decode will throw an exception if fails verification
+    try:
+        payload = jwt.decode(encoded_jwt, 'NoteItUser', algorithms=['HS256'])
+    except Exception as identifier:
+        return custom_400('JWT INVALID')
+    # if valid ensure not expired token
+    expiration = datetime.fromtimestamp(payload['exp'])
+    current_time = datetime.utcnow()
+    if current_time <= expiration:
+        return {'statusCode': 200, 'response': str(payload['email'])}
+    else:
+        return custom_400('Token expired or not valid')

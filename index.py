@@ -1,5 +1,5 @@
 import json
-from minute_functions import create_minute, get_minute_detail, get_my_minutes
+from minute_functions import create_minute, get_minute_detail, get_my_minutes, isAuthenticated
 
 
 def lambda_handler(event, context):
@@ -54,11 +54,19 @@ def lambda_handler(event, context):
             'body': result['response']
         }
     elif (action == 'GetMyMinutes' and event['httpMethod'] == 'GET'):
-        result = get_my_minutes(body['email'])
-        return {
-            'statusCode': result['statusCode'],
-            'body': result['response']
-        }
+        authenticated_response = isAuthenticated(jwt_token)
+        if authenticated_response['statusCode'] == 200:
+            print('User pass authentication with response ' +
+                  str(authenticated_response))
+            # Get email from decoded response. Don't want to store it on client side, but it's in the token which is issued upon successful login
+            body_email = authenticated_response['response']
+            result = get_my_minutes(body_email)
+            return {
+                'statusCode': result['statusCode'],
+                'body': result['response']
+            }
+        else:
+            return authenticated_response
     else:
         return {
             'statusCode': 400,
