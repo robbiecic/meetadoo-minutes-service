@@ -40,8 +40,20 @@ def create_minute(body):
         return custom_400('Body is missing key information')
 
 
-def get_myMinutes(email):
+def create_minute_actions(minute_id):
     pass
+
+
+def get_my_minutes(email):
+    response = dynamodb_client.get_item(
+        TableName='Minutes', Key={'creator': {'S': email}})
+    # Check if an user existsx
+    try:
+        mintues = response['Item']
+        print(minutes)
+        return mintues
+    except:
+        return 0
 
 
 def return_body(jsonObject):
