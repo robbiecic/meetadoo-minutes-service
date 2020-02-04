@@ -7,7 +7,7 @@ import jwt
 import base64
 from datetime import datetime
 from datetime import timedelta
-
+import uuid
 
 # Create dynamodb instance
 dynamodb_client = aws.create_dynamodb_client()
@@ -25,16 +25,39 @@ def create_minute(body):
         date = body['date']
         time = body['time']
         finish = body['finish']
+        dynamo_body = return_body(body)
+        # Create unique identifier to add to DB
+        dynamo_body['id'] = {'S': str(uuid.uuid4())}
 
         # Send item to Minutes table
-        response = dynamodb_client.put_item(TableName='Minutes', Item=body)
-        print(response)
+        response = dynamodb_client.put_item(
+            TableName='Minutes', Item=dynamo_body)
+
         return {'statusCode': 200, 'response': 'Something'}
 
     except Exception as e:
         print(e)
         return custom_400('Body is missing key information')
 
+
+def get_myMinutes(email):
+    pass
+
+
+def return_body(jsonObject):
+    return_dict = {}
+    for key in jsonObject:
+        value = jsonObject[key]
+        if key == 'guests':
+            return_dict[key] = {'SS': value}
+        elif key == 'repeat':
+            return_dict[key] = {'BOOL': value}
+        elif key == 'actions':
+            return_dict[key] = {'L': value}
+        else:
+            return_dict[key] = {'S': value}
+
+    return(return_dict)
 #
 # def update_user(body):
 #     # Can't update key which is email address. Might need a change email address method which removes Item and creates new
@@ -86,25 +109,7 @@ def create_minute(body):
 #         return 0
 #
 #
-# def custom_400(message):
-#     return {'statusCode': 400, 'response': message}
-#
-#
-# def set_cookie(jwt):
-#     # Delete the cookie after 1 day
-#     expires = (datetime.utcnow() +
-#                timedelta(seconds=60 * 60 * 24)).strftime("%a, %d %b %Y %H:%M:%S GMT")
-#     # Will remove HttpOnly and see if that works
-#     # Will take out secure for now, doesn't work in dev
-#     cookie_string = 'jwt=' + \
-#         str(jwt) + ';  expires=' + \
-#         str(expires) + "; SameSite=None; Path=/"
-#     return cookie_string
-#
-#
-# def encrypt_string(string_to_encrypt):
-#     salt = bcrypt.gensalt()
-#     combo_password = string_to_encrypt.encode(
-#         'utf-8') + master_secret_key.encode('utf-8')
-#     hashed_password = bcrypt.hashpw(combo_password, salt)
-#     return hashed_password
+
+
+def custom_400(message):
+    return {'statusCode': 400, 'response': message}

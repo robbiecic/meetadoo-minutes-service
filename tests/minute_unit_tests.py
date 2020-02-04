@@ -17,9 +17,7 @@ class MinuteTestCase(unittest.TestCase):
 
         # Create test user
     def test_create_minute(self):
-        print(json_data['data'])
         response = create_minute(json_data['data'])
-        print(response)
         self.assertEqual(response['statusCode'], 200)
 
 

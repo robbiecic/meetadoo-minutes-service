@@ -8,26 +8,6 @@
     "creator": "test5@test.com",
     "guests": ["test6@test.com", "robert.cicero@hotmail.com"],
     "repeat": false,
-    "description": "This meeting is a test to ensure it creates creating properly and to also test the varios functionality in this API",
-    "actions": [
-      {
-        "id": 1,
-        "assignee": "robert.cicero@hotmail.com",
-        "status": "Outstanding",
-        "comment": "Run unit tests for all functions"
-      },
-      {
-        "id": 2,
-        "assignee": "test6@test.com",
-        "status": "Complete",
-        "comment": "Create boiler plate for API"
-      },
-      {
-        "id": 3,
-        "assignee": "test6@test.com",
-        "status": "Complete",
-        "comment": "Create boiler plate for lambda function"
-      }
-    ]
+    "description": "This meeting is a test to ensure it creates creating properly and to also test the varios functionality in this API"
   }
 }

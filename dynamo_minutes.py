@@ -15,7 +15,7 @@ try:
         TableName='Minutes',
         KeySchema=[
             {
-                'AttributeName': 'creator',
+                'AttributeName': 'id',
                 'KeyType': 'HASH'  # Partition key, unique
             },
             {
@@ -25,7 +25,7 @@ try:
         ],
         AttributeDefinitions=[
             {
-                'AttributeName': 'creator',
+                'AttributeName': 'id',
                 'AttributeType': 'S'
             },
             {
