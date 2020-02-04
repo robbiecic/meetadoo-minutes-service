@@ -46,6 +46,15 @@ def create_minute_actions(minute_id):
     pass
 
 
+def get_minute_detail(meeting_id):
+    minute_detail = dynamodb_client.query(TableName='Minutes',
+                                          Key={'id': {'S': meeting_id}})
+    try:
+        return {'statusCode': 200, 'response': minute_detail['Items']}
+    except:
+        return custom_400('Could not find a meeting')
+
+
 def get_my_minutes(email):
     minutes_i_created = dynamodb_client.query(TableName='Minutes',
                                               IndexName='creator-index', KeyConditionExpression="creator = :email",
