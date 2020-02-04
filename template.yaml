@@ -1,0 +1,11 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: "AWS::Serverless-2016-10-31"
+Description: Minute Module API Lambda
+Resources:
+  algo:
+    Type: "AWS::Serverless::Function"
+    Properties:
+      Handler: index.lambda_handler
+      Runtime: python3.8
+      MemorySize: 256
+      CodeUri: ./
