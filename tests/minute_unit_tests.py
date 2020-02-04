@@ -21,10 +21,9 @@ class MinuteTestCase(unittest.TestCase):
         self.assertEqual(response['statusCode'], 200)
 
     # Get Minute
-    def test_create_minute(self):
+    def test_get_my_minutes(self):
         email = json_data['data']['creator']
         response = get_my_minutes(email)
-        print(response)
         self.assertEqual(response['statusCode'], 200)
 
 

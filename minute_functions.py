@@ -8,6 +8,8 @@ import base64
 from datetime import datetime
 from datetime import timedelta
 import uuid
+from boto3.dynamodb.conditions import Key, Attr
+
 
 # Create dynamodb instance
 dynamodb_client = aws.create_dynamodb_client()
@@ -45,15 +47,17 @@ def create_minute_actions(minute_id):
 
 
 def get_my_minutes(email):
-    response = dynamodb_client.get_item(
-        TableName='Minutes', Key={'creator': {'S': email}})
-    # Check if an user existsx
+    response = dynamodb_client.query(TableName='Minutes',
+                                     IndexName='creator-index', KeyConditionExpression="creator = :v1",
+                                     ExpressionAttributeValues={
+                                         ":v1": {"S": email}
+                                     })
+    minutes = {}
     try:
-        mintues = response['Item']
-        print(minutes)
-        return mintues
+        mintues = response['Items']
+        return {'statusCode': 200, 'response': mintues}
     except:
-        return 0
+        return custom_400('Could not find any')
 
 
 def return_body(jsonObject):
