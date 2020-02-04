@@ -71,8 +71,11 @@ def get_my_minutes(email):
     except:
         minutes_i_attended['Items'] = {}
 
+    return_body = {
+        'minutes_created': minutes_i_created['Items'], 'minutes_attended': minutes_i_attended}
+
     try:
-        return {'statusCode': 200, 'response': {'minutes_created': minutes_i_created['Items'], 'minutes_attended': minutes_i_attended}}
+        return {'statusCode': 200, 'response': str(return_body)}
     except:
         return custom_400('Could not find any')
 
