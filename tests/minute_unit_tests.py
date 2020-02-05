@@ -23,9 +23,9 @@ class MinuteTestCase(unittest.TestCase):
     # Get Minute
     def test_get_my_minutes(self):
         email = json_data['data']['creator']
-        response = get_my_minutes(email)
+        response = json.loads(get_my_minutes(email))
         self.assertEqual(response['statusCode'], 200)
-        response = get_my_minutes('test6@test.com')
+        response = json.loads(get_my_minutes('test6@test.com'))
         self.assertEqual(response['statusCode'], 200)
 
 
