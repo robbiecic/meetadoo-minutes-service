@@ -3,6 +3,7 @@ import aws
 import uuid
 from boto3.dynamodb.conditions import Key, Attr
 import jwt
+import json
 from datetime import datetime
 from datetime import timedelta
 
@@ -75,7 +76,7 @@ def get_my_minutes(email):
         'minutes_created': minutes_i_created['Items'], 'minutes_attended': minutes_i_attended}
 
     try:
-        return {'statusCode': 200, 'response': str(return_body)}
+        return {"statusCode": 200, "response": json.dumps(return_body, ensure_ascii=False)}
     except:
         return custom_400('Could not find any')
 
