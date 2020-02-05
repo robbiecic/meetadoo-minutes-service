@@ -60,11 +60,10 @@ def lambda_handler(event, context):
                   str(authenticated_response))
             # Get email from decoded response. Don't want to store it on client side, but it's in the token which is issued upon successful login
             body_email = authenticated_response['response']
-            result = get_my_minutes(body_email)
-            return {
-                'statusCode': result['statusCode'],
-                'body': result['response']
-            }
+            result = json.loads(get_my_minutes(body_email))
+            return json.dumps({"statusCode": result['statusCode'],
+                               "body": result['response']
+                               })
         else:
             return authenticated_response
     else:

@@ -28,14 +28,13 @@ class MinuteTestCase(unittest.TestCase):
         response = json.loads(get_my_minutes('test6@test.com'))
         self.assertEqual(response['statusCode'], 200)
 
-
 # End of UserTestCase --------------------------------------------------------------------------------------------------------------------
 
 
 def suite():  # Need to define a suite as setUp and tearDown are called per test otherwise
     suite = unittest.TestSuite()
     suite.addTest(MinuteTestCase('test_create_minute'))
-    suite.addTest(MinuteTestCase('get_my_minutes'))
+    suite.addTest(MinuteTestCase('test_get_my_minutes'))
     return suite
 
 
