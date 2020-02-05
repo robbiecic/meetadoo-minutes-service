@@ -114,3 +114,13 @@ def isAuthenticated(encoded_jwt):
         return {'statusCode': 200, 'response': str(payload['email'])}
     else:
         return custom_400('Token expired or not valid')
+
+
+def mock_GetMyMinutes(email_address):
+    result = json.loads(get_my_minutes(email_address))
+    return_result = {}
+    return_result = {
+        "statusCode":  result['statusCode'],
+        "body": json.dumps(result['response']),
+        "isBase64Encoded": False}
+    return return_result

@@ -62,10 +62,10 @@ def lambda_handler(event, context):
             body_email = authenticated_response['response']
             result = json.loads(get_my_minutes(body_email))
             return_result = {}
-            return_result = json.dumps({"statusCode": result['statusCode'],
-                                        "body": result['response']
-                                        })
-            print("result" + return_result)
+            return_result = {
+                "statusCode":  result['statusCode'],
+                "body": json.dumps(result['response']),
+                "isBase64Encoded": False}
             return return_result
         else:
             return authenticated_response
