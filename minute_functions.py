@@ -53,12 +53,14 @@ def get_minute_detail(meeting_id):
 
 def get_my_minutes(email):
     minutes_i_created = dynamodb_client.query(TableName='Minutes',
+                                              ProjectionExpression="creator, title",
                                               IndexName='creator-index', KeyConditionExpression="creator = :email",
                                               ExpressionAttributeValues={
                                                   ":email": {"S": email}
                                               })
 
     minutes_i_attended = dynamodb_client.scan(TableName="Minutes",
+                                              ProjectionExpression="creator, title",
                                               FilterExpression="contains(guests,:email) and creator <> :email",
                                               ExpressionAttributeValues={
                                                   ":email": {"S": email}
@@ -75,6 +77,7 @@ def get_my_minutes(email):
     return_body = {"statusCode": 200, "response": {
         'minutes_created': minutes_i_created['Items'], 'minutes_attended': minutes_i_attended}}
 
+    print(return_body)
     try:
         return json.dumps(return_body)
     except:
