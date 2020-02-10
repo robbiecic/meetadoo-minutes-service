@@ -9,7 +9,6 @@ from datetime import datetime
 from datetime import timedelta
 
 # Create dynamodb instance
-dynamodb_client = aws.create_dynamodb_client()
 dynamodb_resource = aws.create_dynamodb_resource()
 # the lint error is wrong, this actually works!
 table = dynamodb_resource.Table('Minutes')
@@ -25,17 +24,13 @@ def create_minute(body):
         creator = body['creator']
         title = body['title']
         creation_date = body['creation_date']
-        time = body['time']
-        finish = body['finish']
-        dynamo_body = return_body(body)
-        # Create unique identifier to add to DB
-        dynamo_body['id'] = {'S': str(uuid.uuid4())}
+        time = body['time_start']
+        finish = body['time_end']
+        body['id'] = str(uuid.uuid4())
+        response = table.put_item(Item=body)
+        response_code = response['ResponseMetadata']['HTTPStatusCode']
 
-        # Send item to Minutes table
-        response = dynamodb_client.put_item(
-            TableName='Minutes', Item=dynamo_body)
-
-        return {'statusCode': 200, 'response': 'Success'}
+        return {'statusCode': response_code, 'response': 'Success'}
 
     except Exception as e:
         print(e)
@@ -47,8 +42,8 @@ def create_minute_actions(minute_id):
 
 
 def get_minute_detail(meeting_id):
-    minute_detail = dynamodb_client.query(TableName='Minutes',
-                                          Key={'id': {'S': meeting_id}})
+    minute_detail = table.query(Key={'id': meeting_id})
+
     try:
         return {'statusCode': 200, 'response': minute_detail['Items']}
     except:
@@ -56,17 +51,18 @@ def get_minute_detail(meeting_id):
 
 
 def get_my_minutes(email):
-    minutes_i_created = table.query(ProjectionExpression="creator, title",
+    minutes_i_created = table.query(ProjectionExpression="creator, title, creation_date, time_start, time_end, time_zone, guests, repeat_event, description",
                                     IndexName='creator-index', KeyConditionExpression="creator = :email",
                                     ExpressionAttributeValues={
                                         ":email": email
                                     })
 
-    minutes_i_attended = table.scan(ProjectionExpression="creator, title",
+    minutes_i_attended = table.scan(ProjectionExpression="creator, title, creation_date, time_start, time_end, time_zone, guests, repeat_event, description",
                                     FilterExpression="contains(guests,:email) and creator <> :email",
                                     ExpressionAttributeValues={
                                         ":email": email
                                     })
+
     try:
         minutes_i_created['Items']
     except:
@@ -77,28 +73,14 @@ def get_my_minutes(email):
         minutes_i_attended['Items'] = {}
 
     return_body = {"statusCode": 200, "response": {
-        'minutes_created': minutes_i_created['Items'], 'minutes_attended': minutes_i_attended}}
+        "minutes_created": minutes_i_created['Items'], "minutes_attended":  minutes_i_attended['Items']}}
+
+    return_body_json = json.dumps(return_body, default=set_default)
 
     try:
-        return json.dumps(return_body)
+        return return_body_json
     except:
         return custom_400('Could not find any')
-
-
-def return_body(jsonObject):
-    return_dict = {}
-    for key in jsonObject:
-        value = jsonObject[key]
-        if key == 'guests':
-            return_dict[key] = {'SS': value}
-        elif key == 'repeat':
-            return_dict[key] = {'BOOL': value}
-        elif key == 'actions':
-            return_dict[key] = {'L': value}
-        else:
-            return_dict[key] = {'S': value}
-
-    return(return_dict)
 
 
 def custom_400(message):
@@ -128,3 +110,9 @@ def mock_GetMyMinutes(email_address):
         "body": json.dumps(result['response']),
         "isBase64Encoded": False}
     return return_result
+
+
+def set_default(obj):
+    if isinstance(obj, set):
+        return list(obj)
+    raise TypeError

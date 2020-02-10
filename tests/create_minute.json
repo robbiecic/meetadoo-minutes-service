@@ -2,12 +2,12 @@
   "data": {
     "title": "My test meeting",
     "creation_date": "2019-02-04",
-    "time": "10:30",
-    "finish": "13:30",
-    "timezone": "GMT",
+    "time_start": "10:30",
+    "time_end": "13:30",
+    "time_zone": "GMT",
     "creator": "test5@test.com",
     "guests": ["test6@test.com", "robert.cicero@hotmail.com"],
-    "repeat": false,
+    "repeat_event": false,
     "description": "This meeting is a test to ensure it creates creating properly and to also test the varios functionality in this API"
   }
 }
