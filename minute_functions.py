@@ -1,5 +1,6 @@
 
 import aws
+import boto3
 import uuid
 from boto3.dynamodb.conditions import Key, Attr
 import jwt
@@ -9,6 +10,9 @@ from datetime import timedelta
 
 # Create dynamodb instance
 dynamodb_client = aws.create_dynamodb_client()
+dynamodb_resource = aws.create_dynamodb_resource()
+# the lint error is wrong, this actually works!
+table = dynamodb_resource.Table('Minutes')
 
 # Set Master key for cryptography
 master_secret_key = 'RobboSecretKey123'
@@ -52,19 +56,17 @@ def get_minute_detail(meeting_id):
 
 
 def get_my_minutes(email):
-    minutes_i_created = dynamodb_client.query(TableName='Minutes',
-                                              ProjectionExpression="creator, title",
-                                              IndexName='creator-index', KeyConditionExpression="creator = :email",
-                                              ExpressionAttributeValues={
-                                                  ":email": {"S": email}
-                                              })
+    minutes_i_created = table.query(ProjectionExpression="creator, title",
+                                    IndexName='creator-index', KeyConditionExpression="creator = :email",
+                                    ExpressionAttributeValues={
+                                        ":email": email
+                                    })
 
-    minutes_i_attended = dynamodb_client.scan(TableName="Minutes",
-                                              ProjectionExpression="creator, title",
-                                              FilterExpression="contains(guests,:email) and creator <> :email",
-                                              ExpressionAttributeValues={
-                                                  ":email": {"S": email}
-                                              })
+    minutes_i_attended = table.scan(ProjectionExpression="creator, title",
+                                    FilterExpression="contains(guests,:email) and creator <> :email",
+                                    ExpressionAttributeValues={
+                                        ":email": email
+                                    })
     try:
         minutes_i_created['Items']
     except:
@@ -77,7 +79,6 @@ def get_my_minutes(email):
     return_body = {"statusCode": 200, "response": {
         'minutes_created': minutes_i_created['Items'], 'minutes_attended': minutes_i_attended}}
 
-    print(return_body)
     try:
         return json.dumps(return_body)
     except:
