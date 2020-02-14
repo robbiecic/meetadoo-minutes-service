@@ -6,7 +6,6 @@ phases:
     commands:
       - pip3 install boto3 -t ./
       - pip3 install pyjwt -t ./
-      - pip3 install uuid -t ./
   pre_build:
     commands:
       - python -m unittest -v tests/minute_unit_tests.py
