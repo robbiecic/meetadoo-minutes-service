@@ -82,7 +82,8 @@ def lambda_handler(event, context):
             }
         elif (action == 'RemoveAction' and event['httpMethod'] == 'POST'):
             action_id = event['queryStringParameters']['actionID']
-            result = remove_action(action_id)
+            meeting_id = event['queryStringParameters']['meetingID']
+            result = remove_action(action_id, meeting_id)
             return {
                 "statusCode": result['statusCode'],
                 "body": result['response']
