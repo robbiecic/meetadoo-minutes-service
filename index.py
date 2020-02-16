@@ -82,6 +82,8 @@ def lambda_handler(event, context):
             }
         elif (action == 'RemoveAction' and event['httpMethod'] == 'POST'):
             action_id = event['queryStringParameters']['actionID']
+            print('action_id')
+            print(action_id)
             result = remove_action(action_id)
             return {
                 "statusCode": result['statusCode'],
