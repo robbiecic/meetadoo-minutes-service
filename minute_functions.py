@@ -137,7 +137,7 @@ def remove_action(action_id):
 
     # Delete item only works at client level, not resource
     response = dynamodb_client.delete_item(
-        TableName='Actions', Key={'id': action_id})
+        TableName='Actions', Key={'id': str(action_id)})
 
     # response = table_actions.delete_item(Key={'id': action_id})
 
