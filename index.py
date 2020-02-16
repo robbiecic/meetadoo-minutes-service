@@ -84,6 +84,8 @@ def lambda_handler(event, context):
             action_id = event['queryStringParameters']['actionID']
             meeting_id = event['queryStringParameters']['meetingID']
             result = remove_action(action_id, meeting_id)
+            print('result')
+            print(result)
             return {
                 'statusCode': result['statusCode'],
                 'body': result['response']
