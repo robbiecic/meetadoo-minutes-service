@@ -140,11 +140,7 @@ def remove_action(action_id, meeting_id):
         Key={'id': str(action_id), 'meeting_id': str(meeting_id)})
 
     response_code = response['ResponseMetadata']['HTTPStatusCode']
-
-    if (response_code == '200'):
-        return {'statusCode': '200', 'response': 'Success'}
-    else:
-        custom_400('Error removing Item')
+    return {'statusCode': response_code, 'response': 'Success'}
 
 
 def mock_GetMyMinutes(email_address):
@@ -155,6 +151,11 @@ def mock_GetMyMinutes(email_address):
         "body": json.dumps(result['response']),
         "isBase64Encoded": False}
     return return_result
+
+
+def add_audit_history(message):
+    # Audit history should have unique id, meeting_id, description of change, author of change, date stamp of change
+    pass
 
 
 def set_default(obj):
