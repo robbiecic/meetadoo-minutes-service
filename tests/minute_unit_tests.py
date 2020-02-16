@@ -48,10 +48,10 @@ class MinuteTestCase(unittest.TestCase):
         response = json.loads(get_actions(meeting_id))
         self.assertEqual(response['statusCode'], 200)
 
-    def test_delete_item(self):
-        response = remove_action(
-            '1b75294e-d229-4dcc-ad08-6a8194bb9ae0', '1234567')
-        self.assertEqual(response['statusCode'], 200)
+    # def test_delete_item(self):
+    #     response = remove_action(
+    #         '1b75294e-d229-4dcc-ad08-6a8194bb9ae0', '1234567')
+    #     self.assertEqual(response['statusCode'], 200)
 
 # End of UserTestCase --------------------------------------------------------------------------------------------------------------------
 
@@ -63,7 +63,7 @@ def suite():  # Need to define a suite as setUp and tearDown are called per test
     suite.addTest(MinuteTestCase('test_mock_GetMyMinutes'))
     suite.addTest(MinuteTestCase('test_create_action'))
     suite.addTest(MinuteTestCase('test_get_actions'))
-    suite.addTest(MinuteTestCase('test_delete_item'))
+    # suite.addTest(MinuteTestCase('test_delete_item'))
     return suite
 
 
