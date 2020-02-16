@@ -142,7 +142,7 @@ def remove_action(action_id, meeting_id):
     response_code = response['ResponseMetadata']['HTTPStatusCode']
 
     if (response_code == '200'):
-        return {'statusCode': 200, 'response': 'Success'}
+        return {'statusCode': '200', 'response': 'Success'}
     else:
         custom_400('Error removing Item')
 
