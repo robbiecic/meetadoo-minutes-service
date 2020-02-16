@@ -138,11 +138,11 @@ def remove_action(action_id, meeting_id):
     # Delete item only works at client level, not resource
     response = table_actions.delete_item(
         Key={'id': str(action_id), 'meeting_id': str(meeting_id)})
-    print(response)
+
     response_code = response['ResponseMetadata']['HTTPStatusCode']
 
     if (response_code == '200'):
-        return {'statusCode': 200, 'response': 'Removed Item'}
+        return {'statusCode': 200, 'response': 'Success'}
     else:
         custom_400('Error removing Item')
 
