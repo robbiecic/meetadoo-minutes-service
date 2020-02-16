@@ -10,6 +10,7 @@ from datetime import timedelta
 
 # Create dynamodb instance
 dynamodb_resource = aws.create_dynamodb_resource()
+dynamodb_client = aws.create_dynamodb_client()
 # the lint error is wrong, this actually works!
 table = dynamodb_resource.Table('Minutes')
 table_actions = dynamodb_resource.Table('Actions')
@@ -133,7 +134,13 @@ def get_actions(meeting_id):
 
 
 def remove_action(action_id):
-    response = table_actions.delete_item(Key={'id': action_id})
+
+    # Delete item only works at client level, not resource
+    response = dynamodb_client.delete_item(
+        TableName='Actions', Key={'id': action_id})
+
+    # response = table_actions.delete_item(Key={'id': action_id})
+
     response_code = response['ResponseMetadata']['HTTPStatusCode']
 
     if (response_code == '200'):
