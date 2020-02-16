@@ -12,7 +12,7 @@ from datetime import timedelta
 dynamodb_resource = aws.create_dynamodb_resource()
 # the lint error is wrong, this actually works!
 table = dynamodb_resource.Table('Minutes')
-
+table_actions = dynamodb_resource.Table('Actions')
 # Set Master key for cryptography
 master_secret_key = 'RobboSecretKey123'
 
@@ -100,6 +100,16 @@ def isAuthenticated(encoded_jwt):
         return {'statusCode': 200, 'response': str(payload['email'])}
     else:
         return custom_400('Token expired or not valid')
+
+
+def create_action(body):
+    # With action
+    # body must contain the meeting_id, assignee, description and date_action_due
+    body['id'] = str(uuid.uuid4())
+    response = table_actions.put_item(Item=body)
+    response_code = response['ResponseMetadata']['HTTPStatusCode']
+
+    return {'statusCode': response_code, 'response': 'Success'}
 
 
 def mock_GetMyMinutes(email_address):
