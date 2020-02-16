@@ -28,6 +28,7 @@ def create_minute(body):
         finish = body['time_end']
         body['id'] = str(uuid.uuid4())
         response = table.put_item(Item=body)
+
         response_code = response['ResponseMetadata']['HTTPStatusCode']
 
         return {'statusCode': response_code, 'response': 'Success'}
