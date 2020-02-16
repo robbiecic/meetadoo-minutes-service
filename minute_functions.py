@@ -14,6 +14,7 @@ dynamodb_resource = aws.create_dynamodb_resource()
 # the lint error is wrong, this actually works!
 table = dynamodb_resource.Table('Minutes')
 table_actions = dynamodb_resource.Table('Actions')
+table_history = dynamodb_resource.Table('History')
 # Set Master key for cryptography
 master_secret_key = 'RobboSecretKey123'
 
@@ -112,6 +113,13 @@ def create_action(body):
         body['id'] = str(uuid.uuid4())
         response = table_actions.put_item(Item=body)
         response_code = response['ResponseMetadata']['HTTPStatusCode']
+
+        audit = {}
+        audit['meeting_id'] = body['meeting_id']
+        audit['description'] = 'Added Action - ' + str(body['id'])
+        audit['author'] = 'TBC'
+        add_audit_history(audit)
+
         return {'statusCode': response_code, 'response': 'Success'}
     except:
         custom_400('Failed to add action')
@@ -140,6 +148,13 @@ def remove_action(action_id, meeting_id):
         Key={'id': str(action_id), 'meeting_id': str(meeting_id)})
 
     response_code = response['ResponseMetadata']['HTTPStatusCode']
+
+    audit = {}
+    audit['meeting_id'] = str(meeting_id)
+    audit['description'] = 'Removed Action - ' + str(action_id)
+    audit['author'] = 'TBC'
+    add_audit_history(audit)
+
     return {'statusCode': response_code, 'response': 'Success'}
 
 
@@ -154,8 +169,15 @@ def mock_GetMyMinutes(email_address):
 
 
 def add_audit_history(message):
-    # Audit history should have unique id, meeting_id, description of change, author of change, date stamp of change
-    pass
+    # Message = meeting_id, author, description
+    try:
+        message['id'] = str(uuid.uuid4())
+        message['date_stamp'] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+        response = table_history.put_item(Item=message)
+        response_code = response['ResponseMetadata']['HTTPStatusCode']
+        return {'statusCode': response_code, 'response': 'Success'}
+    except e:
+        custom_400('Failed to add action')
 
 
 def set_default(obj):
