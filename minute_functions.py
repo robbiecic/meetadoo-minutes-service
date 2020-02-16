@@ -105,12 +105,41 @@ def isAuthenticated(encoded_jwt):
 
 def create_action(body):
     # With action
-    # body must contain the meeting_id, assignee, description and date_action_due
-    body['id'] = str(uuid.uuid4())
-    response = table_actions.put_item(Item=body)
+    # body must contain the meeting_id, assignee, description and due_date
+    # Like this body = {meeting_id: 123, assignee: robert.cicero@hotmail.com, description: NEED TO DO SOMEHTING, due_date: 2020-02-15}
+    try:
+        body['id'] = str(uuid.uuid4())
+        response = table_actions.put_item(Item=body)
+        response_code = response['ResponseMetadata']['HTTPStatusCode']
+        return {'statusCode': response_code, 'response': 'Success'}
+    except:
+        custom_400('Failed to add action')
+
+
+def get_actions(meeting_id):
+    actions_response = table_actions.scan(ProjectionExpression="description, assignee, due_date, id, meeting_id",
+                                          FilterExpression="meeting_id = :vmeeting_id",
+                                          ExpressionAttributeValues={
+                                              ":vmeeting_id": meeting_id
+                                          })
+    try:
+        actions_response['Items']
+        return_body = {"statusCode": 200, "response": {
+            "actions": actions_response['Items']}}
+        return_body_json = json.dumps(return_body, default=set_default)
+        return return_body_json
+    except:
+        return custom_400('No actions found')
+
+
+def remove_action(action_id):
+    response = table_actions.delete_item(Key={'id': action_id})
     response_code = response['ResponseMetadata']['HTTPStatusCode']
 
-    return {'statusCode': response_code, 'response': 'Success'}
+    if (response_code == '200'):
+        return {'statusCode': 200, 'response': 'Removed Item'}
+    else:
+        custom_400('Error removing Item')
 
 
 def mock_GetMyMinutes(email_address):
