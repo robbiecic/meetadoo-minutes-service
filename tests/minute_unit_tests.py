@@ -43,7 +43,7 @@ class MinuteTestCase(unittest.TestCase):
         self.assertEqual(response['statusCode'], 200)
 
     # get_actions
-    def test_get_my_minutes(self):
+    def test_get_actions(self):
         meeting_id = action_json_data['data']['meeting_id']
         response = json.loads(get_actions(meeting_id))
         self.assertEqual(response['statusCode'], 200)
@@ -58,7 +58,7 @@ def suite():  # Need to define a suite as setUp and tearDown are called per test
     suite.addTest(MinuteTestCase('test_get_my_minutes'))
     suite.addTest(MinuteTestCase('test_mock_GetMyMinutes'))
     suite.addTest(MinuteTestCase('test_create_action'))
-    suite.addTest(MinuteTestCase('test_get_my_minutes'))
+    suite.addTest(MinuteTestCase('test_get_actions'))
     return suite
 
 

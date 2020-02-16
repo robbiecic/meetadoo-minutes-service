@@ -40,26 +40,26 @@ def lambda_handler(event, context):
 
     print('jwt_token - ' + str(jwt_token))
 
-    # Enter if statement block to route message
-    if (action == 'CreateMinute' and event['httpMethod'] == 'POST'):
-        result = create_minute(body)
-        return {
-            'statusCode': result['statusCode'],
-            'body': result['response']
-        }
-    elif (action == 'GetMinuteDetail' and event['httpMethod'] == 'GET'):
-        result = get_minute_detail(body['meeting_id'])
-        return {
-            'statusCode': result['statusCode'],
-            'body': result['response']
-        }
-    elif (action == 'GetMyMinutes' and event['httpMethod'] == 'GET'):
-        authenticated_response = isAuthenticated(jwt_token)
-        if authenticated_response['statusCode'] == 200:
-            print('User pass authentication with response ' +
-                  str(authenticated_response))
-            # Get email from decoded response. Don't want to store it on client side, but it's in the token which is issued upon successful login
-            body_email = authenticated_response['response']
+    # With any minute request, you must be authenticated
+    authenticated_response = isAuthenticated(jwt_token)
+    if authenticated_response['statusCode'] == 200:
+        print('User pass authentication with response ' +
+              str(authenticated_response))
+        body_email = authenticated_response['response']
+
+        if (action == 'CreateMinute' and event['httpMethod'] == 'POST'):
+            result = create_minute(body)
+            return {
+                'statusCode': result['statusCode'],
+                'body': result['response']
+            }
+        elif (action == 'GetMinuteDetail' and event['httpMethod'] == 'GET'):
+            result = get_minute_detail(body['meeting_id'])
+            return {
+                'statusCode': result['statusCode'],
+                'body': result['response']
+            }
+        elif (action == 'GetMyMinutes' and event['httpMethod'] == 'GET'):
             result = json.loads(get_my_minutes(body_email))
             return_result = {}
             return_result = {
@@ -67,10 +67,28 @@ def lambda_handler(event, context):
                 "body": json.dumps(result['response']),
                 "isBase64Encoded": False}
             return return_result
+        elif (action == 'CreateAction' and event['httpMethod'] == 'POST'):
+            result = create_action(body)
+            return {
+                'statusCode': result['statusCode'],
+                'body': result['response']
+            }
+        elif (action == 'GetActions' and event['httpMethod'] == 'GET'):
+            result = json.loads(get_actions(body))
+            return {
+                "statusCode": result['statusCode'],
+                "body": json.dumps(result['response'])
+            }
+        elif (action == 'RemoveAction' and event['httpMethod'] == 'POST'):
+            result = remove_action(body['action_id'])
+            return {
+                "statusCode": result['statusCode'],
+                "body": result['response']
+            }
         else:
-            return authenticated_response
+            return {
+                'statusCode': 400,
+                'body': "A valid request action was not provided"
+            }
     else:
-        return {
-            'statusCode': 400,
-            'body': "A valid request action was not provided"
-        }
+        return authenticated_response
