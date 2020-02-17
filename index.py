@@ -1,5 +1,5 @@
 import json
-from minute_functions import create_minute, get_minute_detail, get_my_minutes, isAuthenticated, create_action, get_actions, remove_action
+from minute_functions import create_minute, get_minute_detail, get_my_minutes, isAuthenticated, create_action, get_actions, remove_action, get_history
 
 
 def lambda_handler(event, context):
@@ -89,6 +89,13 @@ def lambda_handler(event, context):
             return {
                 'statusCode': result['statusCode'],
                 'body': result['response']
+            }
+        elif (action == 'GetHistory' and event['httpMethod'] == 'GET'):
+            meeting_id = event['queryStringParameters']['meetingID']
+            result = json.loads(get_history(meeting_id))
+            return {
+                "statusCode": result['statusCode'],
+                "body": json.dumps(result['response'])
             }
         else:
             return {

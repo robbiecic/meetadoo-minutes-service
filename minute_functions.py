@@ -176,8 +176,24 @@ def add_audit_history(message):
         response = table_history.put_item(Item=message)
         response_code = response['ResponseMetadata']['HTTPStatusCode']
         return {'statusCode': response_code, 'response': 'Success'}
-    except e:
+    except:
         custom_400('Failed to add action')
+
+
+def get_history(meeting_id):
+    history_response = table_history.scan(ProjectionExpression="id, meeting_id, date_stamp, author, description",
+                                          FilterExpression="meeting_id = :vmeeting_id",
+                                          ExpressionAttributeValues={
+                                              ":vmeeting_id": meeting_id
+                                          })
+    try:
+        history_response['Items']
+        return_body = {"statusCode": 200, "response": {
+            "actions": history_response['Items']}}
+        return_body_json = json.dumps(return_body, default=set_default)
+        return return_body_json
+    except:
+        return custom_400('No history found')
 
 
 def set_default(obj):
