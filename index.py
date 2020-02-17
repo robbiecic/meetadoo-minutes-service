@@ -48,7 +48,7 @@ def lambda_handler(event, context):
         body_email = authenticated_response['response']
 
         if (action == 'CreateMinute' and event['httpMethod'] == 'POST'):
-            result = create_minute(body)
+            result = create_minute(body, body_email)
             return {
                 'statusCode': result['statusCode'],
                 'body': result['response']
@@ -68,7 +68,7 @@ def lambda_handler(event, context):
                 "isBase64Encoded": False}
             return return_result
         elif (action == 'CreateAction' and event['httpMethod'] == 'POST'):
-            result = create_action(body)
+            result = create_action(body, body_email)
             return {
                 'statusCode': result['statusCode'],
                 'body': result['response']
@@ -83,7 +83,7 @@ def lambda_handler(event, context):
         elif (action == 'RemoveAction' and event['httpMethod'] == 'POST'):
             action_id = event['queryStringParameters']['actionID']
             meeting_id = event['queryStringParameters']['meetingID']
-            result = remove_action(action_id, meeting_id)
+            result = remove_action(action_id, meeting_id, body_email)
             print('result')
             print(result)
             return {

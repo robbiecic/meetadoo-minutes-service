@@ -19,7 +19,7 @@ table_history = dynamodb_resource.Table('History')
 master_secret_key = 'RobboSecretKey123'
 
 
-def create_minute(body):
+def create_minute(body, user_email):
 
     try:
         # Body must contain the following mandatory fields
@@ -33,15 +33,17 @@ def create_minute(body):
 
         response_code = response['ResponseMetadata']['HTTPStatusCode']
 
+        audit = {}
+        audit['meeting_id'] = body['id']
+        audit['description'] = 'Added Meeting  - ' + str(body['title'])
+        audit['author'] = user_email
+        add_audit_history(audit)
+
         return {'statusCode': response_code, 'response': 'Success'}
 
     except Exception as e:
         print(e)
         return custom_400('Body is missing key information')
-
-
-def create_minute_actions(minute_id):
-    pass
 
 
 def get_minute_detail(meeting_id):
@@ -105,7 +107,7 @@ def isAuthenticated(encoded_jwt):
         return custom_400('Token expired or not valid')
 
 
-def create_action(body):
+def create_action(body, user_email):
     # With action
     # body must contain the meeting_id, assignee, description and due_date
     # Like this body = {meeting_id: 123, assignee: robert.cicero@hotmail.com, description: NEED TO DO SOMEHTING, due_date: 2020-02-15}
@@ -113,12 +115,11 @@ def create_action(body):
         body['id'] = str(uuid.uuid4())
         response = table_actions.put_item(Item=body)
         response_code = response['ResponseMetadata']['HTTPStatusCode']
-
+        # If successful, add to audit table
         audit = {}
         audit['meeting_id'] = body['meeting_id']
         audit['description'] = 'Added Action - ' + str(body['description'])
-        # This is wrong - need to pull through the user who made the change to the system
-        audit['author'] = body['assignee']
+        audit['author'] = user_email
         add_audit_history(audit)
 
         return {'statusCode': response_code, 'response': 'Success'}
@@ -142,16 +143,17 @@ def get_actions(meeting_id):
         return custom_400('No actions found')
 
 
-def remove_action(action_id, meeting_id):
+def remove_action(action_id, meeting_id, user_email):
     # Get description
     action_details = table_actions.get_item(
         Key={'id': action_id, 'meeting_id': meeting_id})
 
+    # If successful, add to audit table
     audit = {}
     audit['meeting_id'] = str(meeting_id)
     audit['description'] = 'Removed Action - ' + \
         str(action_details['Item']['description'])
-    audit['author'] = 'Needs Updating'
+    audit['author'] = user_email
     add_audit_history(audit)
 
     # Delete item only works at client level, not resource
@@ -182,7 +184,7 @@ def add_audit_history(message):
         response_code = response['ResponseMetadata']['HTTPStatusCode']
         return {'statusCode': response_code, 'response': 'Success'}
     except:
-        custom_400('Failed to add action')
+        custom_400('Failed to add to history')
 
 
 def get_history(meeting_id):

@@ -19,7 +19,8 @@ class MinuteTestCase(unittest.TestCase):
 
     # Create minute
     def test_create_minute(self):
-        response = create_minute(json_data['data'])
+        response = create_minute(
+            json_data['data'], json_data['data']['creator'])
         self.assertEqual(response['statusCode'], 200)
 
     # Get Minute
@@ -39,7 +40,7 @@ class MinuteTestCase(unittest.TestCase):
     # create_action
     def test_create_action(self):
         body = action_json_data['data']
-        response = create_action(body)
+        response = create_action(body, json_data['data']['creator'])
         self.assertEqual(response['statusCode'], 200)
 
     # get_actions
