@@ -116,8 +116,9 @@ def create_action(body):
 
         audit = {}
         audit['meeting_id'] = body['meeting_id']
-        audit['description'] = 'Added Action - ' + str(body['id'])
-        audit['author'] = 'TBC'
+        audit['description'] = 'Added Action - ' + str(body['description'])
+        # This is wrong - need to pull through the user who made the change to the system
+        audit['author'] = body['assignee']
         add_audit_history(audit)
 
         return {'statusCode': response_code, 'response': 'Success'}
@@ -142,6 +143,9 @@ def get_actions(meeting_id):
 
 
 def remove_action(action_id, meeting_id):
+    # Get author and description
+    action_details = table_actions.get_item(
+        Key={'id': str(action_id), 'meeting_id': str(meeting_id)})
 
     # Delete item only works at client level, not resource
     response = table_actions.delete_item(
@@ -151,8 +155,9 @@ def remove_action(action_id, meeting_id):
 
     audit = {}
     audit['meeting_id'] = str(meeting_id)
-    audit['description'] = 'Removed Action - ' + str(action_id)
-    audit['author'] = 'TBC'
+    audit['description'] = 'Removed Action - ' + \
+        str(action_details['Items']['description'])
+    audit['author'] = str(action_details['Items']['author'])
     add_audit_history(audit)
 
     return {'statusCode': response_code, 'response': 'Success'}
