@@ -143,22 +143,22 @@ def get_actions(meeting_id):
 
 
 def remove_action(action_id, meeting_id):
-    # Get author and description
+    # Get description
     action_details = table_actions.get_item(
-        Key={'id': str(action_id), 'meeting_id': str(meeting_id)})
+        Key={'id': action_id, 'meeting_id': meeting_id})
+
+    audit = {}
+    audit['meeting_id'] = str(meeting_id)
+    audit['description'] = 'Removed Action - ' + \
+        str(action_details['Item']['description'])
+    audit['author'] = 'Needs Updating'
+    add_audit_history(audit)
 
     # Delete item only works at client level, not resource
     response = table_actions.delete_item(
         Key={'id': str(action_id), 'meeting_id': str(meeting_id)})
 
     response_code = response['ResponseMetadata']['HTTPStatusCode']
-
-    audit = {}
-    audit['meeting_id'] = str(meeting_id)
-    audit['description'] = 'Removed Action - ' + \
-        str(action_details['Items']['description'])
-    audit['author'] = str(action_details['Items']['author'])
-    add_audit_history(audit)
 
     return {'statusCode': response_code, 'response': 'Success'}
 
