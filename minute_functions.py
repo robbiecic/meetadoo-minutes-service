@@ -23,7 +23,7 @@ def create_minute(body, user_email):
 
     try:
         # Body must contain the following mandatory fields
-        creator = user_email
+        body['creator'] = user_email
         title = body['title']
         creation_date = body['creation_date']
         time = body['time_start']
