@@ -1,0 +1,14 @@
+{
+  "data": {
+    "id": "a1905409-209f-400d-bdd2-1bfab409e0f3",
+    "title": "My test meeting",
+    "creation_date": "2020-02-19",
+    "time_start": "10:30",
+    "time_end": "13:30",
+    "time_zone": "GMT",
+    "creator": "test5@test.com",
+    "guests": ["test6@test.com", "robert.cicero@hotmail.com"],
+    "repeat_event": false,
+    "description": "I've successfully updated this minute!!!"
+  }
+}

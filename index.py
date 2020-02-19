@@ -1,5 +1,5 @@
 import json
-from minute_functions import create_minute, get_minute_detail, get_my_minutes, isAuthenticated, create_action, get_actions, remove_action, get_history
+from minute_functions import create_minute, get_minute_detail, get_my_minutes, isAuthenticated, create_action, get_actions, remove_action, get_history, update_minute
 
 
 def lambda_handler(event, context):
@@ -49,6 +49,12 @@ def lambda_handler(event, context):
 
         if (action == 'CreateMinute' and event['httpMethod'] == 'POST'):
             result = create_minute(body, body_email)
+            return {
+                'statusCode': result['statusCode'],
+                'body': result['response']
+            }
+        elif (action == 'UpdateMinute' and event['httpMethod'] == 'POST'):
+            result = update_minute(body, body_email)
             return {
                 'statusCode': result['statusCode'],
                 'body': result['response']

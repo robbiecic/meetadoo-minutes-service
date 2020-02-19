@@ -46,6 +46,26 @@ def create_minute(body, user_email):
         return custom_400('Body is missing key information')
 
 
+def update_minute(body, user_email):
+    # Will need need some validation here, as it will just create or replace the existing object
+    # You cannot modify creation date! Creation date and meeting ID must match in order for it to update correctly
+    try:
+        # Put Item will replace the entire content of the existing object
+        response = table.put_item(Item=body)
+        if response['ResponseMetadata']['HTTPStatusCode'] == 200:
+            # If successful add to audit table
+            audit = {}
+            audit['meeting_id'] = body['id']
+            audit['description'] = 'Added Meeting  - ' + str(body['title'])
+            audit['author'] = user_email
+            add_audit_history(audit)
+            return {'statusCode': 200, 'response': 'Successfully ipdated Minute'}
+        else:
+            return custom_400('No minute found')
+    except Exception as E:
+        return custom_400(str(E))
+
+
 def get_minute_detail(meeting_id):
     minute_detail = table.query(Key={'id': meeting_id})
 

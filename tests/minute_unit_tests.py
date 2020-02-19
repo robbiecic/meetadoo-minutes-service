@@ -1,12 +1,14 @@
 import unittest
 import json
-from minute_functions import create_minute, get_my_minutes, mock_GetMyMinutes, create_action, get_actions, remove_action, get_history
+from minute_functions import create_minute, get_my_minutes, mock_GetMyMinutes, create_action, get_actions, remove_action, get_history, update_minute
 
 # Import test data
 with open('tests/create_minute.json') as json_file:
     json_data = json.load(json_file)
 with open('tests/create_action.json') as json_file:
     action_json_data = json.load(json_file)
+with open('tests/update_minute.json') as json_file:
+    update_json_data = json.load(json_file)
 
 
 class MinuteTestCase(unittest.TestCase):
@@ -59,6 +61,10 @@ class MinuteTestCase(unittest.TestCase):
         response = json.loads(get_history(meeting_id))
         self.assertEqual(response['statusCode'], 200)
 
+    def test_update_minute(self):
+        response = update_minute(update_json_data['data'], 'test5@test.com')
+        self.assertEqual(response['statusCode'], 200)
+
 # End of UserTestCase --------------------------------------------------------------------------------------------------------------------
 
 
@@ -71,6 +77,7 @@ def suite():  # Need to define a suite as setUp and tearDown are called per test
     suite.addTest(MinuteTestCase('test_get_actions'))
     # suite.addTest(MinuteTestCase('test_delete_action'))
     suite.addTest(MinuteTestCase('test_get_history'))
+    suite.addTest(MinuteTestCase('test_update_minute'))
     return suite
 
 
