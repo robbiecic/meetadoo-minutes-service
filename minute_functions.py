@@ -56,10 +56,10 @@ def update_minute(body, user_email):
             # If successful add to audit table
             audit = {}
             audit['meeting_id'] = body['id']
-            audit['description'] = 'Added Meeting  - ' + str(body['title'])
+            audit['description'] = 'Updated Meeting  - ' + str(body['title'])
             audit['author'] = user_email
             add_audit_history(audit)
-            return {'statusCode': 200, 'response': 'Successfully ipdated Minute'}
+            return {'statusCode': 200, 'response': 'Successfully updated Minute'}
         else:
             return custom_400('No minute found')
     except Exception as E:
