@@ -1,5 +1,6 @@
 import json
 from minute_functions import create_minute, get_minute_detail, get_my_minutes, isAuthenticated, create_action, get_actions, remove_action, get_history, update_minute
+from getJwt import get_jwt
 
 
 def lambda_handler(event, context):
@@ -27,18 +28,12 @@ def lambda_handler(event, context):
         body = bodydata['data']
 
     # Locate cookie details if there, if not ignore
+    # 'cookie' is case sensistive. Is lower case from browser, upper care from Postman
     try:
-        # 'cookie' is case sensistive. Is lower case from browser, upper care from Postman
-        try:
-            cookie = event['headers']['cookie']
-        except:
-            cookie = event['headers']['Cookie']
-        print('Cookie - ' + str(cookie))
-        jwt_token = cookie.replace("jwt=", "")
+        cookie = event['headers']['cookie']
     except:
-        jwt_token = "Something Invalid"
-
-    print('jwt_token - ' + str(jwt_token))
+        cookie = event['headers']['Cookie']
+    jwt_token = get_jwt(cookie)
 
     # With any minute request, you must be authenticated
     authenticated_response = isAuthenticated(jwt_token)
