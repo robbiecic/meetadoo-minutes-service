@@ -253,7 +253,7 @@ def supplement_minutes(body, user_email):
         audit['author'] = user_email
         add_audit_history(audit)
 
-        return {'statusCode': response['ResponseMetadata']['HTTPStatusCode'], 'response': 'Success'}
+        return {'statusCode': 200, 'response': 'Success'}
 
     except:
         custom_400('Failed to add to history')
