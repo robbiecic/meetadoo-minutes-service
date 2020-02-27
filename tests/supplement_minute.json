@@ -1,0 +1,12 @@
+{
+  "meeting": {
+    "id": "acc3a0d6-1c94-4d8e-9174-0038253574c8",
+    "creation_date": "2019-02-04"
+  },
+  "minutes": {
+    "attendees": ["robert.cicero@test.com,shirley@test.com"],
+    "apologies": ["test5@test.com"],
+    "discussion_points": "We discussed this and that.",
+    "decisions": "Decided python is awesome!"
+  }
+}
