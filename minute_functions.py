@@ -223,6 +223,42 @@ def get_history(meeting_id):
         return custom_400('No history found')
 
 
+def supplement_minutes(body, user_email):
+    # Expected body format
+    # {
+    #   "meeting": {
+    #     "id": "",
+    #     "creation_date": ""
+    #   },
+    #   "minutes": {
+    #   }
+    # }
+
+    minute_to_update = body['meeting']
+    supplemented_data = body['minutes']
+    try:
+        response = table.update_item(
+            Key={
+                'id': minute_to_update['id'],
+                'creation_date': minute_to_update['creation_date']
+            },
+            UpdateExpression="SET minutes= :var1",
+            ExpressionAttributeValues={':var1': supplemented_data}
+
+        )
+        # If successful, add to audit table
+        audit = {}
+        audit['meeting_id'] = str(minute_to_update['id'])
+        audit['description'] = 'Updated Minute detail'
+        audit['author'] = user_email
+        add_audit_history(audit)
+
+        return {'statusCode': 200, 'response': 'Success'}
+
+    except:
+        custom_400('Failed to add to history')
+
+
 def set_default(obj):
     if isinstance(obj, set):
         return list(obj)
