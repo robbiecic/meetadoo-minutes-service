@@ -214,9 +214,12 @@ def get_history(meeting_id):
                                               ":vmeeting_id": meeting_id
                                           })
     try:
-        history_response['Items']
+        history = history_response['Items']
+        history_sorted = sorted(
+            history, key=lambda history_sorted: history_sorted['date_stamp'], reverse=True)
+
         return_body = {"statusCode": 200, "response": {
-            "actions": history_response['Items']}}
+            "actions": history_sorted}}
         return_body_json = json.dumps(return_body, default=set_default)
         return return_body_json
     except:
