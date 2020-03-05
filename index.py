@@ -87,6 +87,12 @@ def lambda_handler(event, context):
                 "statusCode": result['statusCode'],
                 "body": json.dumps(result['response'])
             }
+        elif (action == 'GetMyActions' and event['httpMethod'] == 'GET'):
+            result = json.loads(get_actions(body_email))
+            return {
+                "statusCode": result['statusCode'],
+                "body": json.dumps(result['response'])
+            }
         elif (action == 'RemoveAction' and event['httpMethod'] == 'POST'):
             action_id = event['queryStringParameters']['actionID']
             meeting_id = event['queryStringParameters']['meetingID']
