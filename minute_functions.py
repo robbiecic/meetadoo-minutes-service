@@ -76,13 +76,13 @@ def get_minute_detail(meeting_id):
 
 
 def get_my_minutes(email):
-    minutes_i_created = table.query(ProjectionExpression="id, creator, title, creation_date, time_start, time_end, time_zone, guests, repeat_event, description, minutes",
+    minutes_i_created = table.query(ProjectionExpression="id, creator, title, creation_date, time_start, time_end, time_zone, guests, repeat_event, description, minutes, labels",
                                     IndexName='creator-index', KeyConditionExpression="creator = :email",
                                     ExpressionAttributeValues={
                                         ":email": email
                                     })
 
-    minutes_i_attended = table.scan(ProjectionExpression="id, creator, title, creation_date, time_start, time_end, time_zone, guests, repeat_event, description, minutes",
+    minutes_i_attended = table.scan(ProjectionExpression="id, creator, title, creation_date, time_start, time_end, time_zone, guests, repeat_event, description, minutes, labels",
                                     FilterExpression="contains(guests,:email) and creator <> :email",
                                     ExpressionAttributeValues={
                                         ":email": email
