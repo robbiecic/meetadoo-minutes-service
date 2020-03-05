@@ -163,6 +163,22 @@ def get_actions(meeting_id):
         return custom_400('No actions found')
 
 
+def get_my_actions(email_address):
+    actions_response = table_actions.scan(ProjectionExpression="description, assignee, due_date, id, meeting_id",
+                                          FilterExpression="contains(assignee, :vassignee)",
+                                          ExpressionAttributeValues={
+                                              ":vassignee": email_address
+                                          })
+    try:
+        actions_response['Items']
+        return_body = {"statusCode": 200, "response": {
+            "actions": actions_response['Items']}}
+        return_body_json = json.dumps(return_body, default=set_default)
+        return return_body_json
+    except:
+        return custom_400('No actions found')
+
+
 def remove_action(action_id, meeting_id, user_email):
     # Get description
     action_details = table_actions.get_item(

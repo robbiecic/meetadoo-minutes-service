@@ -1,6 +1,6 @@
 import unittest
 import json
-from minute_functions import create_minute, get_my_minutes, mock_GetMyMinutes, create_action, get_actions, remove_action, get_history, update_minute, supplement_minutes
+from minute_functions import create_minute, get_my_minutes, mock_GetMyMinutes, create_action, get_actions, remove_action, get_history, update_minute, supplement_minutes, get_my_actions
 
 # Import test data
 with open('tests/create_minute.json') as json_file:
@@ -72,6 +72,10 @@ class MinuteTestCase(unittest.TestCase):
         response = supplement_minutes(supplement_json_data, 'test5@test.com')
         self.assertEqual(response['statusCode'], 200)
 
+    def test_get_my_actions(self):
+        response = json.loads(get_my_actions('test5@test.com'))
+        self.assertEqual(response['statusCode'], 200)
+
 
 # End of UserTestCase --------------------------------------------------------------------------------------------------------------------
 
@@ -87,6 +91,7 @@ def suite():  # Need to define a suite as setUp and tearDown are called per test
     suite.addTest(MinuteTestCase('test_get_history'))
     suite.addTest(MinuteTestCase('test_update_minute'))
     suite.addTest(MinuteTestCase('test_supplementing_minutes'))
+    suite.addTest(MinuteTestCase('test_get_my_actions'))
     return suite
 
 
