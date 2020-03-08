@@ -148,7 +148,7 @@ def create_action(body, user_email):
 
 
 def get_actions(meeting_id):
-    actions_response = table_actions.scan(ProjectionExpression="description, assignee, due_date, id, meeting_id",
+    actions_response = table_actions.scan(ProjectionExpression="description, assignee, due_date, id, meeting_id, checked",
                                           FilterExpression="meeting_id = :vmeeting_id",
                                           ExpressionAttributeValues={
                                               ":vmeeting_id": meeting_id
@@ -164,7 +164,7 @@ def get_actions(meeting_id):
 
 
 def get_my_actions(email_address):
-    actions_response = table_actions.scan(ProjectionExpression="description, assignee, due_date, id, meeting_id",
+    actions_response = table_actions.scan(ProjectionExpression="description, assignee, due_date, id, meeting_id, checked",
                                           FilterExpression="contains(assignee, :vassignee)",
                                           ExpressionAttributeValues={
                                               ":vassignee": email_address
