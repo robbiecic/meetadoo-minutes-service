@@ -278,6 +278,43 @@ def supplement_minutes(body, user_email):
         custom_400('Failed to add to history')
 
 
+def complete_action(body, user_email):
+    # Expected body format
+    # {
+    #   "meeting_id": Value,
+    #   "action_id": Value,
+    #   "completed": Value
+    # }
+
+    meeting_id = body['meeting_id']
+    action_id = body['action_id']
+    checked = body['checked']
+
+    try:
+        response = table_actions.update_item(
+            Key={
+                'id': action_id,
+                'meeting_id': meeting_id
+            },
+            UpdateExpression="SET checked= :var1",
+            ExpressionAttributeValues={':var1': checked}
+
+        )
+        # If successful, add to audit table
+        audit = {}
+        audit['meeting_id'] = str(meeting_id)
+        audit['description'] = 'Changed status of ' + \
+            str(action_id) + ' to ' + str(checked)
+        audit['author'] = user_email
+
+        add_audit_history(audit)
+
+        return {'statusCode': 200, 'response': 'Success'}
+
+    except:
+        custom_400('Failed to update action')
+
+
 def set_default(obj):
     if isinstance(obj, set):
         return list(obj)

@@ -1,5 +1,5 @@
 import json
-from minute_functions import create_minute, get_minute_detail, get_my_minutes, isAuthenticated, create_action, get_actions, remove_action, get_history, update_minute, supplement_minutes
+from minute_functions import create_minute, get_minute_detail, get_my_minutes, isAuthenticated, create_action, get_actions, remove_action, get_history, update_minute, supplement_minutes, complete_action
 from getJwt import get_jwt
 
 
@@ -97,8 +97,12 @@ def lambda_handler(event, context):
             action_id = event['queryStringParameters']['actionID']
             meeting_id = event['queryStringParameters']['meetingID']
             result = remove_action(action_id, meeting_id, body_email)
-            print('result')
-            print(result)
+            return {
+                'statusCode': result['statusCode'],
+                'body': result['response']
+            }
+        elif (action == 'CompleteAction' and event['httpMethod'] == 'POST'):
+            result = complete_action(body, body_email)
             return {
                 'statusCode': result['statusCode'],
                 'body': result['response']
