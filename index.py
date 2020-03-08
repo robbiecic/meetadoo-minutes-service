@@ -1,5 +1,5 @@
 import json
-from minute_functions import create_minute, get_minute_detail, get_my_minutes, isAuthenticated, create_action, get_actions, remove_action, get_history, update_minute, supplement_minutes, complete_action
+from minute_functions import create_minute, get_minute_detail, get_my_minutes, isAuthenticated, create_action, get_actions, remove_action, get_history, update_minute, supplement_minutes, complete_action, get_my_actions
 from getJwt import get_jwt
 
 
@@ -88,7 +88,7 @@ def lambda_handler(event, context):
                 "body": json.dumps(result['response'])
             }
         elif (action == 'GetMyActions' and event['httpMethod'] == 'GET'):
-            result = json.loads(get_actions(body_email))
+            result = json.loads(get_my_actions(body_email))
             return {
                 "statusCode": result['statusCode'],
                 "body": json.dumps(result['response'])
