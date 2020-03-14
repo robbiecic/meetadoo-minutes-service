@@ -66,8 +66,9 @@ def update_minute(body, user_email):
         return custom_400(str(E))
 
 
-def get_minute_detail(meeting_id):
-    minute_detail = table.query(Key={'id': meeting_id})
+def get_minute_detail(meeting_id, creation_date):
+    minute_detail = table.query(
+        Key={'id': meeting_id, 'creation_date': creation_date})
 
     try:
         return {'statusCode': 200, 'response': minute_detail['Items']}
