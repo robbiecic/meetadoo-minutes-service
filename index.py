@@ -63,7 +63,7 @@ def lambda_handler(event, context):
         elif (action == 'GetMinuteDetail' and event['httpMethod'] == 'GET'):
             meeting_id = event['queryStringParameters']['meetingID']
             creation_date = event['queryStringParameters']['creation_date']
-            result = get_minute_detail(meeting_id, creation_date)
+            result = json.loads(get_minute_detail(meeting_id, creation_date))
             return {
                 'statusCode': result['statusCode'],
                 'body': result['response']
