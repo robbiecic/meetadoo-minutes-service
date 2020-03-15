@@ -84,7 +84,7 @@ class MinuteTestCase(unittest.TestCase):
 
     def test_get_minute_detail(self):
         response = json.loads(get_minute_detail(
-            'ed459090-79e1-4bb1-8481-a433c7f80a13', 'test'))
+            '1bd4cdea-bd6c-4eca-96d0-d0a2450cd7bc', '2019-02-04'))
         self.assertEqual(response['statusCode'], 200)
 
 
