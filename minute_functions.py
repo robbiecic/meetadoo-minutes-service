@@ -73,8 +73,11 @@ def get_minute_detail(meeting_id, creation_date):
                                     ":vid": meeting_id
                                 })
 
+    return_body = {"statusCode": 200, "response": minute_detail['Items']}
+    return_body_json = json.dumps(return_body, default=set_default)
+
     try:
-        return {'statusCode': 200, 'response': minute_detail['Items']}
+        return return_body_json
     except:
         return custom_400('Could not find a meeting')
 
