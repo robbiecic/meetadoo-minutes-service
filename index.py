@@ -66,7 +66,8 @@ def lambda_handler(event, context):
             result = json.loads(get_minute_detail(meeting_id, creation_date))
             return {
                 'statusCode': result['statusCode'],
-                'body': result['response']
+                'body': json.dumps(result['response']),
+                "isBase64Encoded": False
             }
         elif (action == 'GetMyMinutes' and event['httpMethod'] == 'GET'):
             result = json.loads(get_my_minutes(body_email))
