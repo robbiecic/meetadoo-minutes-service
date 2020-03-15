@@ -67,8 +67,11 @@ def update_minute(body, user_email):
 
 
 def get_minute_detail(meeting_id, creation_date):
-    minute_detail = table.query(
-        Key={'id': meeting_id, 'creation_date': creation_date})
+    minute_detail = table.query(ProjectionExpression="id, creator, title, creation_date, time_start, time_end, time_zone, guests, repeat_event, description, minutes, labels",
+                                KeyConditionExpression="id = :vid",
+                                ExpressionAttributeValues={
+                                    ":vid": meeting_id
+                                })
 
     try:
         return {'statusCode': 200, 'response': minute_detail['Items']}
