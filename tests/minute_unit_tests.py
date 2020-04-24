@@ -3,15 +3,15 @@ import json
 from minute_functions import create_minute, get_my_minutes, mock_GetMyMinutes, create_action, get_actions, remove_action, get_history, update_minute, supplement_minutes, get_my_actions, complete_action, get_minute_detail
 
 # Import test data
-with open('tests/create_minute.json') as json_file:
+with open('tests/test-data/create_minute.json') as json_file:
     json_data = json.load(json_file)
-with open('tests/create_action.json') as json_file:
+with open('tests/test-data/create_action.json') as json_file:
     action_json_data = json.load(json_file)
-with open('tests/update_minute.json') as json_file:
+with open('tests/test-data/update_minute.json') as json_file:
     update_json_data = json.load(json_file)
-with open('tests/supplement_minute.json') as json_file:
+with open('tests/test-data/supplement_minute.json') as json_file:
     supplement_json_data = json.load(json_file)
-with open('tests/complete_action.json') as json_file:
+with open('tests/test-data/complete_action.json') as json_file:
     checked_json_data = json.load(json_file)
 
 

@@ -3,7 +3,7 @@ import json
 import requests
 
 # Import test data
-with open('tests/create_user.json') as json_file:
+with open('tests/test-data/create_user.json') as json_file:
     json_data = json.load(json_file)
 
 # Set URL where API calls are made
