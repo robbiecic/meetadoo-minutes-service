@@ -1,5 +1,6 @@
 
 from aws.aws import create_dynamodb_resource
+from aws.secrets import get_secrets
 import boto3
 import uuid
 from boto3.dynamodb.conditions import Key, Attr
@@ -9,7 +10,7 @@ from datetime import datetime
 from datetime import timedelta
 
 # Create dynamodb instance
-dynamodb_resource = aws.create_dynamodb_resource()
+dynamodb_resource = create_dynamodb_resource()
 
 # the lint error is wrong, this actually works!
 table = dynamodb_resource.Table('Minutes')
