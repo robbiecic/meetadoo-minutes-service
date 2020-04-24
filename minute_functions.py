@@ -1,5 +1,5 @@
 
-import aws
+from aws.aws import create_dynamodb_resource
 import boto3
 import uuid
 from boto3.dynamodb.conditions import Key, Attr
@@ -10,13 +10,11 @@ from datetime import timedelta
 
 # Create dynamodb instance
 dynamodb_resource = aws.create_dynamodb_resource()
-# dynamodb_client = aws.create_dynamodb_client()
+
 # the lint error is wrong, this actually works!
 table = dynamodb_resource.Table('Minutes')
 table_actions = dynamodb_resource.Table('Actions')
 table_history = dynamodb_resource.Table('History')
-# Set Master key for cryptography
-master_secret_key = 'RobboSecretKey123'
 
 
 def create_minute(body, user_email):

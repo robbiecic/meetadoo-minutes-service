@@ -3,7 +3,7 @@
 #
 # This file will create the new table store main user details in dynamodb
 
-import aws
+from aws.aws import create_dynamodb_resource, create_dynamodb_client
 from botocore.exceptions import ClientError
 
 # Create dynamodb instance
@@ -12,7 +12,7 @@ client2 = aws.create_dynamodb_client()
 
 try:
     table = client.create_table(
-        TableName='Actions',
+        TableName='History',
         KeySchema=[
             {
                 'AttributeName': 'id',
