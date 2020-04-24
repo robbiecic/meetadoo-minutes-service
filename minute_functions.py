@@ -16,6 +16,8 @@ table = dynamodb_resource.Table('Minutes')
 table_actions = dynamodb_resource.Table('Actions')
 table_history = dynamodb_resource.Table('History')
 
+data = json.loads(get_secrets())
+
 
 def create_minute(body, user_email):
 
@@ -117,7 +119,8 @@ def custom_400(message):
 def isAuthenticated(encoded_jwt):
     # jwt decode will throw an exception if fails verification
     try:
-        payload = jwt.decode(encoded_jwt, 'NoteItUser', algorithms=['HS256'])
+        payload = jwt.decode(
+            encoded_jwt, data['jwt_encode'], algorithms=['HS256'])
     except Exception as identifier:
         return custom_400('JWT INVALID')
     # if valid ensure not expired token
